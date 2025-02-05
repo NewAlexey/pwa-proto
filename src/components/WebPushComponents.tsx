@@ -10,11 +10,11 @@ const subscribeOnNotification = () => {
     alert('eheheh!');
     const publicVapidKey = "BGNotAAxKxGS33hFvdBXLveK20Gb7K9piatPIQaajucJHLYmtZcGeh7LIKtm0wVeleenEpMrBR57yhRYvKQ7j0Q";
 
-        return navigator.serviceWorker
+    return navigator.serviceWorker
         .getRegistration()
         .then((registration) => {
             alert("Got registration!");
-
+            alert(`Is PushManager~~ ${registration?.pushManager}`)
             return registration?.pushManager
             .subscribe({
                 userVisibleOnly: true,
