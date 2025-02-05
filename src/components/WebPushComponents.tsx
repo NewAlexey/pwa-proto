@@ -6,25 +6,27 @@ export function WebPushComponents() {
     )
 }
 
-const subscribeOnNotification = async () => {
+const subscribeOnNotification = () => {
     alert('eheheh!');
     const publicVapidKey = "BGNotAAxKxGS33hFvdBXLveK20Gb7K9piatPIQaajucJHLYmtZcGeh7LIKtm0wVeleenEpMrBR57yhRYvKQ7j0Q";
 
     if ('serviceWorker' in navigator) {
         try {
-            const register = await navigator.serviceWorker.getRegistration();
+            navigator.serviceWorker.getRegistration().then((registration) => {
+                if (!registration) {
+                    alert("No registration found!");
 
-            if (!register) {
-                alert("No registration found!");
+                    return;
+                }
 
-                return;
-            }
-
-            const subscription = await register.pushManager.subscribe({
-                userVisibleOnly: true,
-                applicationServerKey: publicVapidKey
-            });
-            PostSubscriptionDetails(subscription);
+                alert(JSON.stringify(registration));
+                registration.pushManager.subscribe({
+                    userVisibleOnly: true,
+                    applicationServerKey: publicVapidKey
+                }).then((subscription) => {
+                    PostSubscriptionDetails(subscription);
+                })
+            })
         } catch (err) {
             alert(err);
             console.error(err);
