@@ -2,45 +2,69 @@ export function WebPushComponents() {
     return (
         <div>
             <button onClick={showNotificationHandler}>Notification Ask</button>
-            <button onClick={subscribeOnNotification}>Subscribe on push-notification</button>
+            <button onClick={registerAndSubscribe}>Subscribe on push-notification</button>
         </div>
     )
 }
 
 const showNotificationHandler = () => {
-    Notification.requestPermission(function (status) {
+    alert(`IsNotification??, ${Notification}`)
+    Notification.requestPermission().then((status) => {
+        alert(`Notification Status~~ ${status}`);
         console.log('Notification Permissiong status:', status);
-    });
+    })
 }
-
-const subscribeOnNotification = () => {
-    alert('eheheh!');
-    const publicVapidKey = "BGNotAAxKxGS33hFvdBXLveK20Gb7K9piatPIQaajucJHLYmtZcGeh7LIKtm0wVeleenEpMrBR57yhRYvKQ7j0Q";
-
-    return navigator.serviceWorker
-        .getRegistration()
-        .then((registration) => {
-            alert(`Got registration!, registration - ${JSON.stringify(registration)}`);
-            alert(`Is PushManager~~ ${registration?.pushManager}`)
-            return registration?.pushManager
-            .subscribe({
+async function registerAndSubscribe() {
+    try {
+        await navigator.serviceWorker.register('./sw.js');
+        //subscribe to notification
+        navigator.serviceWorker.ready
+        .then((registration: ServiceWorkerRegistration) => {
+            return registration.pushManager.subscribe({
                 userVisibleOnly: true,
-                applicationServerKey: publicVapidKey,
-            })
-            .then((pushSubscription) => {
-                alert("Got subscription!!");
-                PostSubscriptionDetails(pushSubscription);
-            })
-            .catch((error) => {
-                alert(`Error 1, ${error}`);
-                throw new Error(error);
+                applicationServerKey: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
             });
         })
+        .then((subscription: PushSubscription) => {
+            console.info("Created subscription Object: ", subscription.toJSON());
+            PostSubscriptionDetails(subscription);
+        })
         .catch((error) => {
-            alert(`Error 2, ${error}`);
-            throw new Error(error);
+            alert(error);
         });
+    } catch (error) {
+        alert(error);
+    }
 }
+
+// const subscribeOnNotification = () => {
+//     alert('eheheh!');
+//     const publicVapidKey = "BGNotAAxKxGS33hFvdBXLveK20Gb7K9piatPIQaajucJHLYmtZcGeh7LIKtm0wVeleenEpMrBR57yhRYvKQ7j0Q";
+//
+//     return navigator.serviceWorker
+//         .getRegistration()
+//         .then((registration) => {
+//             alert(`Got registration!, registration - ${JSON.stringify(registration)}`);
+//             alert(`Is PushManager~~ ${registration?.pushManager}`)
+//             return registration?.pushManager
+//             .subscribe({
+//                 userVisibleOnly: true,
+//                 applicationServerKey: publicVapidKey,
+//             })
+//             .then((pushSubscription) => {
+//                 alert("Got subscription!!");
+//                 PostSubscriptionDetails(pushSubscription);
+//             })
+//             .catch((error) => {
+//                 alert(`Error 1, ${error}`);
+//                 throw new Error(error);
+//             });
+//         })
+//         .catch((error) => {
+//             alert(`Error 2, ${error}`);
+//             throw new Error(error);
+//         });
+// }
 
 function PostSubscriptionDetails(Subscription: PushSubscription) {
     let sub = JSON.parse(JSON.stringify(Subscription));
