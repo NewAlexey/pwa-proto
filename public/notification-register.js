@@ -1,49 +1,29 @@
 (async () => {
     const publicVapidKey = "BGNotAAxKxGS33hFvdBXLveK20Gb7K9piatPIQaajucJHLYmtZcGeh7LIKtm0wVeleenEpMrBR57yhRYvKQ7j0Q";
-    
-    if (!("Notification" in window)) {
-        alert("This browser does not support web push notification. This Demo has failed for you.  :'-( ");
-        document.getElementById("welcomemsg").innerHTML = "This browser does not support desktop notification. This Demo has failed :( ";
-    } else {
-        Notification.requestPermission(function (status) {
-            console.log('Notification Permissiong status:', status);
-        });
-
-        if (Notification.permission === 'denied') {
-            document.getElementById("welcomemsg").innerHTML = "You've denied notification on a notifcation DEMO! I'm sad!";
-        } else {
-            
-            // We are a go. Everything is ready.
-            // We've asked for notificaiton permissiongs. And we've been given it.
-            // Time to register our service worker to listen for notifications and pop them up when we receive them from the server.
-            
-            // Register the serviceWorker script at /sw.js from our server if supported
-            if ('serviceWorker' in navigator) { // yes this browser has a serviceWorker functionality.
-                // // First. Let's de-register any web workers we have for this domain just in case damian was testing things.
-                // // 1) Get all registered ServiceWorkers
-                // navigator.serviceWorker.getRegistrations().then((registrations) => {
-                //     // loop through them and un-register from them.
-                //     for (let registration of registrations) {
-                //         registration.unregister()
-                //     }
-                // }).catch(function (err) {
-                //     console.log('Service Worker Unregistration failed: ', err);
-                // });
-                
-                
-                try {
-                    const register = await navigator.serviceWorker.register('./sw.js', { scope: '/' });
-                    const subscription = await register.pushManager.subscribe({
-                        userVisibleOnly: true,
-                        applicationServerKey: publicVapidKey
-                    });
-                    PostSubscriptionDetails(subscription);
-                } catch (err) {
-                    console.error(err);
-                }
-            } // end of  - if ('serviceWorker' in navigator) {
-        } // end of if (Notification.permission === 'denied' )
-    } // end of - if (!("Notification" in window))
+    if ('serviceWorker' in navigator) { // yes this browser has a serviceWorker functionality.
+        // // First. Let's de-register any web workers we have for this domain just in case damian was testing things.
+        // // 1) Get all registered ServiceWorkers
+        // navigator.serviceWorker.getRegistrations().then((registrations) => {
+        //     // loop through them and un-register from them.
+        //     for (let registration of registrations) {
+        //         registration.unregister()
+        //     }
+        // }).catch(function (err) {
+        //     console.log('Service Worker Unregistration failed: ', err);
+        // });
+        
+        
+        try {
+            const register = await navigator.serviceWorker.register('./sw.js', { scope: '/' });
+            const subscription = await register.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: publicVapidKey
+            });
+            PostSubscriptionDetails(subscription);
+        } catch (err) {
+            console.error(err);
+        }
+    }
 })();
 
 function PostSubscriptionDetails(Subscription) {

@@ -7,51 +7,36 @@ export function WebPushComponents() {
 }
 
 const subscribeOnNotification = async () => {
-        const publicVapidKey = "BGNotAAxKxGS33hFvdBXLveK20Gb7K9piatPIQaajucJHLYmtZcGeh7LIKtm0wVeleenEpMrBR57yhRYvKQ7j0Q";
+    const publicVapidKey = "BGNotAAxKxGS33hFvdBXLveK20Gb7K9piatPIQaajucJHLYmtZcGeh7LIKtm0wVeleenEpMrBR57yhRYvKQ7j0Q";
 
-        if (!("Notification" in window)) {
-            alert("This browser does not support web push notification. This Demo has failed for you.  :'-( ");
-        } else {
-            Notification.requestPermission(function (status) {
-                console.log('Notification Permissiong status:', status);
+    if ('serviceWorker' in navigator) {
+        try {
+            const register = await navigator.serviceWorker.register('./sw.js', { scope: '/' });
+            const subscription = await register.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: publicVapidKey
             });
+            PostSubscriptionDetails(subscription);
+        } catch (err) {
+            console.error(err);
+        }
+    }
+}
 
-            if (Notification.permission === 'denied') {
-                alert("You've denied notification on a notifcation DEMO! I'm sad!");
-            } else {
-                if ('serviceWorker' in navigator) { // yes this browser has a serviceWorker functionality.
-                    try {
-                        const register = await navigator.serviceWorker.register('./sw.js', { scope: '/' });
-                        const subscription = await register.pushManager.subscribe({
-                            userVisibleOnly: true,
-                            applicationServerKey: publicVapidKey
-                        });
-                        PostSubscriptionDetails(subscription);
-                    } catch (err) {
-                        console.error(err);
-                    }
-                } // end of  - if ('serviceWorker' in navigator) {
-            } // end of if (Notification.permission === 'denied' )
-        } // end of - if (!("Notification" in window))
+function PostSubscriptionDetails(Subscription: PushSubscription) {
+    let sub = JSON.parse(JSON.stringify(Subscription));
+    let token = sub.keys.p256dh;
+    let  auth = sub.keys.auth;
+    let payload = {endpoint:sub.endpoint,token:token,auth:auth};
 
-    function PostSubscriptionDetails(Subscription: PushSubscription) {
-        // let's parse the details of the subscription we got back from the creator of this browser
-        let sub = JSON.parse(JSON.stringify(Subscription));
-        let token = sub.keys.p256dh;
-        let  auth = sub.keys.auth;
-        let payload = {endpoint:sub.endpoint,token:token,auth:auth};
-        // we could also send to the server in the payload other things like the user's id. or something special for it to use later. We don't in this example.
-
-        // Let's send this to the backend that will have everything it needs when it needs to notify us.
-        fetch('/newbrowser', {
-            method: 'POST',
-            headers: new Headers({'Content-Type': 'application/json'}),
-            body: JSON.stringify(payload)
-        })
+    fetch('/newbrowser', {
+        method: 'POST',
+        headers: new Headers({'Content-Type': 'application/json'}),
+        body: JSON.stringify(payload)
+    })
         .then(res=> res.json())
         .then(function(data) {
             console.log("AAAAA data!!!", data);
             // Todo. Save anything you needed when you "regsitered" with the server and told him how to notify you.
         });
-    }
 }
