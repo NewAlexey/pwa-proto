@@ -9,7 +9,7 @@ export function WebPushComponents() {
 }
 
 const checkPermission = () => {
-    alert(`${('Notification' in window)} = Notification`);
+    alert(`Notification in windows = ${('Notification' in window)}`);
 
     Notification.requestPermission().then(function(permission) {
         alert(`${permission} = permission`);
@@ -17,7 +17,7 @@ const checkPermission = () => {
 }
 
 const checkPushManage = () => {
-    alert(`${('PushManager' in window)} = ?`);
+    alert(`PushManager in windows = ${('PushManager' in window)}`);
 }
 
 const subscribeOnNotification = () => {
