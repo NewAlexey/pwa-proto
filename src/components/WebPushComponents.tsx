@@ -1,10 +1,19 @@
 export function WebPushComponents() {
     return (
         <div>
+            <button onClick={checkPermission}>Check Permission</button>
             <button onClick={checkPushManage}>Check push manager</button>
             <button onClick={subscribeOnNotification}>Subscribe on push-notification</button>
         </div>
     )
+}
+
+const checkPermission = () => {
+    alert(`${('Notification' in window)} = Notification`);
+
+    Notification.requestPermission().then(function(permission) {
+        alert(`${permission} = permission`);
+    })
 }
 
 const checkPushManage = () => {
