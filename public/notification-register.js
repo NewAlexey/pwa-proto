@@ -1,17 +1,17 @@
 (async () => {
     const publicVapidKey = "BGNotAAxKxGS33hFvdBXLveK20Gb7K9piatPIQaajucJHLYmtZcGeh7LIKtm0wVeleenEpMrBR57yhRYvKQ7j0Q";
     
-    if (!("Notification" in window)) {
-        alert("This browser does not support web push notification. This Demo has failed for you.  :'-( ");
-        document.getElementById("welcomemsg").innerHTML = "This browser does not support desktop notification. This Demo has failed :( ";
-    } else {
-        Notification.requestPermission(function (status) {
-            console.log('Notification Permissiong status:', status);
-        });
-        
-        if (Notification.permission === 'denied') {
-            document.getElementById("welcomemsg").innerHTML = "You've denied notification on a notifcation DEMO! I'm sad!";
-        } else {
+    // if (!("Notification" in window)) {
+    //     alert("This browser does not support web push notification. This Demo has failed for you.  :'-( ");
+    //     document.getElementById("welcomemsg").innerHTML = "This browser does not support desktop notification. This Demo has failed :( ";
+    // } else {
+    //     Notification.requestPermission(function (status) {
+    //         console.log('Notification Permissiong status:', status);
+    //     });
+    //
+    //     if (Notification.permission === 'denied') {
+    //         document.getElementById("welcomemsg").innerHTML = "You've denied notification on a notifcation DEMO! I'm sad!";
+    //     } else {
             
             // We are a go. Everything is ready.
             // We've asked for notificaiton permissiongs. And we've been given it.
@@ -41,10 +41,11 @@
                 } catch (err) {
                     console.error(err);
                 }
-                
-            } // end of  - if ('serviceWorker' in navigator) {
-        } // end of if (Notification.permission === 'denied' )
-    } // end of - if (!("Notification" in window))
+            }
+            
+    //         } // end of  - if ('serviceWorker' in navigator) {
+    //     } // end of if (Notification.permission === 'denied' )
+    // } // end of - if (!("Notification" in window))
 })();
 
 function PostSubscriptionDetails(Subscription) {
