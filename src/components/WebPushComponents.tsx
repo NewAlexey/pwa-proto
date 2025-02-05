@@ -10,28 +10,29 @@ const subscribeOnNotification = () => {
     alert('eheheh!');
     const publicVapidKey = "BGNotAAxKxGS33hFvdBXLveK20Gb7K9piatPIQaajucJHLYmtZcGeh7LIKtm0wVeleenEpMrBR57yhRYvKQ7j0Q";
 
-    if ('serviceWorker' in navigator) {
-        try {
-            navigator.serviceWorker.getRegistration().then((registration) => {
-                if (!registration) {
-                    alert("No registration found!");
+        return navigator.serviceWorker
+        .getRegistration()
+        .then((registration) => {
+            alert("Got registration!");
 
-                    return;
-                }
-
-                alert(JSON.stringify(registration));
-                registration.pushManager.subscribe({
-                    userVisibleOnly: true,
-                    applicationServerKey: publicVapidKey
-                }).then((subscription) => {
-                    PostSubscriptionDetails(subscription);
-                })
+            return registration?.pushManager
+            .subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: publicVapidKey,
             })
-        } catch (err) {
-            alert(err);
-            console.error(err);
-        }
-    }
+            .then((pushSubscription) => {
+                alert("Got subscription!!");
+                PostSubscriptionDetails(pushSubscription);
+            })
+            .catch((error) => {
+                alert(`Error 1, ${error}`);
+                throw new Error(error);
+            });
+        })
+        .catch((error) => {
+            alert(`Error 2, ${error}`);
+            throw new Error(error);
+        });
 }
 
 function PostSubscriptionDetails(Subscription: PushSubscription) {
