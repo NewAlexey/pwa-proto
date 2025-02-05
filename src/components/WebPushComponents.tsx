@@ -7,6 +7,7 @@ export function WebPushComponents() {
 }
 
 const subscribeOnNotification = async () => {
+    alert('eheheh!');
     const publicVapidKey = "BGNotAAxKxGS33hFvdBXLveK20Gb7K9piatPIQaajucJHLYmtZcGeh7LIKtm0wVeleenEpMrBR57yhRYvKQ7j0Q";
 
     if ('serviceWorker' in navigator) {
@@ -25,6 +26,7 @@ const subscribeOnNotification = async () => {
             });
             PostSubscriptionDetails(subscription);
         } catch (err) {
+            alert(err);
             console.error(err);
         }
     }
