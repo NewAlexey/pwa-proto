@@ -11,7 +11,14 @@ const subscribeOnNotification = async () => {
 
     if ('serviceWorker' in navigator) {
         try {
-            const register = await navigator.serviceWorker.register('./sw.js', { scope: '/' });
+            const register = await navigator.serviceWorker.getRegistration();
+
+            if (!register) {
+                alert("No registration found!");
+
+                return;
+            }
+
             const subscription = await register.pushManager.subscribe({
                 userVisibleOnly: true,
                 applicationServerKey: publicVapidKey
@@ -26,7 +33,7 @@ const subscribeOnNotification = async () => {
 function PostSubscriptionDetails(Subscription: PushSubscription) {
     let sub = JSON.parse(JSON.stringify(Subscription));
     let token = sub.keys.p256dh;
-    let  auth = sub.keys.auth;
+    let auth = sub.keys.auth;
     let payload = {endpoint:sub.endpoint,token:token,auth:auth};
 
     fetch('/newbrowser', {
