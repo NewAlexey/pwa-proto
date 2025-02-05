@@ -1,9 +1,16 @@
 export function WebPushComponents() {
     return (
         <div>
+            <button onClick={showNotificationHandler}>Notification Ask</button>
             <button onClick={subscribeOnNotification}>Subscribe on push-notification</button>
         </div>
     )
+}
+
+const showNotificationHandler = () => {
+    Notification.requestPermission(function (status) {
+        console.log('Notification Permissiong status:', status);
+    });
 }
 
 const subscribeOnNotification = () => {
@@ -13,7 +20,7 @@ const subscribeOnNotification = () => {
     return navigator.serviceWorker
         .getRegistration()
         .then((registration) => {
-            alert("Got registration!");
+            alert(`Got registration!, registration - ${JSON.stringify(registration)}`);
             alert(`Is PushManager~~ ${registration?.pushManager}`)
             return registration?.pushManager
             .subscribe({

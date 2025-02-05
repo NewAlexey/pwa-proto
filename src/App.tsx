@@ -18,7 +18,7 @@ function App() {
         </a>
       </div>
 
-      <h1>Web Push Proto V7</h1>
+      <h1>Web Push Proto V8</h1>
 
       <div className="card">
         <button onClick={() => setCount((count) => count + 1)}>
